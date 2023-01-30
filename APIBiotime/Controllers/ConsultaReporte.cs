@@ -84,10 +84,9 @@ namespace APIBiotime.Controllers
 
                         var lista = await (from ic in contexto.IclockTransactions
                                            join
-                                        t in contexto.IclockTerminals on ic.TerminalId equals t.Id
-                                           join
+                                        
                                         pe in contexto.PersonnelEmployees on ic.EmpCode equals pe.EmpCode
-                                           where ic.EmpCode == rut && ic.PunchTime > fechaInicio && ic.PunchTime<=fechaTermino
+                                           where ic.EmpCode == rut && ic.PunchTime >= fechaInicio && ic.PunchTime<=fechaTermino
                                            select new
                                            {
                                                rut = ic.EmpCode,
@@ -174,6 +173,11 @@ namespace APIBiotime.Controllers
 
             
         }
+
+
+
+
+
 
     }
 }

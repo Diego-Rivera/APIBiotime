@@ -373,6 +373,8 @@ public partial class BiotimeContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UsuarioWeb> UsuarioWebs { get; set; }
+
     public virtual DbSet<VisitorReason> VisitorReasons { get; set; }
 
     public virtual DbSet<VisitorReservation> VisitorReservations { get; set; }
@@ -411,7 +413,7 @@ public partial class BiotimeContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost; Database=biotime; Username=postgres; Password=230169Mfc; Port=7496");
+        => optionsBuilder.UseNpgsql("Host=localhost;Database=biotime;Username=postgres;Password=230169Mfc; Port=7496");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -6329,6 +6331,28 @@ public partial class BiotimeContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("updated_at");
+        });
+
+        modelBuilder.Entity<UsuarioWeb>(entity =>
+        {
+            entity.HasKey(e => e.Rut).HasName("usuario_web_pkey");
+
+            entity.ToTable("usuario_web");
+
+            entity.HasIndex(e => e.Email, "usuario_web_email_key").IsUnique();
+
+            entity.Property(e => e.Rut)
+                .HasMaxLength(10)
+                .HasColumnName("rut");
+            entity.Property(e => e.Email)
+                .HasMaxLength(250)
+                .HasColumnName("email");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(200)
+                .HasColumnName("nombre");
+            entity.Property(e => e.Pass)
+                .HasMaxLength(15)
+                .HasColumnName("pass");
         });
 
         modelBuilder.Entity<VisitorReason>(entity =>
