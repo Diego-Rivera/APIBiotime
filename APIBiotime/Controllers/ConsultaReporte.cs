@@ -23,9 +23,7 @@ namespace APIBiotime.Controllers
                     {
                         var lista = await (from ic in contexto.IclockTransactions
                                            join
-                                        t in contexto.IclockTerminals on ic.TerminalId equals t.Id
-                                           join
-                                        pe in contexto.PersonnelEmployees on ic.EmpCode equals pe.EmpCode
+                                           pe in contexto.PersonnelEmployees on ic.EmpCode equals pe.EmpCode
                                         where (ic.EmpCode == rut) && (ic.PunchState == "0" || ic.PunchState == "1")
                                            select new
                                            {
@@ -37,7 +35,8 @@ namespace APIBiotime.Controllers
                                                nombreReloj=ic.TerminalAlias
 
                                            }).ToListAsync();
-                        return Ok(lista);
+                        
+                        return Ok(lista.OrderBy(x => x.fechahora).ToList());
                     }
 
                     //Rut e Inicio
@@ -65,7 +64,7 @@ namespace APIBiotime.Controllers
                                                nombreReloj = ic.TerminalAlias
 
                                            }).ToListAsync();
-                        return Ok(lista);
+                        return Ok(lista.OrderBy(x=>x.fechahora));
                     }
 
 
@@ -97,7 +96,7 @@ namespace APIBiotime.Controllers
                                                nombreReloj = ic.TerminalAlias
 
                                            }).ToListAsync();
-                        return Ok(lista);
+                        return Ok(lista.OrderBy(x=>x.rut).ThenBy(n=> n.fechahora).ToList());
                     }
 
                     //Sólo Inicio
@@ -125,7 +124,7 @@ namespace APIBiotime.Controllers
                                                nombreReloj = ic.TerminalAlias
 
                                            }).ToListAsync();
-                        return Ok(lista);
+                        return Ok(lista.OrderBy(x=> x.rut).ThenBy(n=>n.fechahora).ToList());
                     }
 
 
@@ -158,7 +157,7 @@ namespace APIBiotime.Controllers
                                                nombreReloj = ic.TerminalAlias
 
                                            }).ToListAsync();
-                        return Ok(lista);
+                        return Ok(lista.OrderBy(x=>x.rut).ToList());
                     }
 
 

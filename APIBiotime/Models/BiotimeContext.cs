@@ -215,6 +215,8 @@ public partial class BiotimeContext : DbContext
 
     public virtual DbSet<GuardianUserobjectpermission> GuardianUserobjectpermissions { get; set; }
 
+    public virtual DbSet<Historico> Historicos { get; set; }
+
     public virtual DbSet<IclockBiodatum> IclockBiodata { get; set; }
 
     public virtual DbSet<IclockBiophoto> IclockBiophotos { get; set; }
@@ -3681,6 +3683,35 @@ public partial class BiotimeContext : DbContext
                 .HasConstraintName("guardian_userobjectpermission_user_id_d5c1e964_fk_auth_user_id");
         });
 
+        modelBuilder.Entity<Historico>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("historico");
+
+            entity.Property(e => e.Entrada)
+                .HasMaxLength(10)
+                .HasColumnName("entrada");
+            entity.Property(e => e.Fecha)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("fecha");
+            entity.Property(e => e.Id)
+                .HasMaxLength(15)
+                .HasColumnName("id");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(150)
+                .HasColumnName("nombre");
+            entity.Property(e => e.Procedencia)
+                .HasMaxLength(30)
+                .HasColumnName("procedencia");
+            entity.Property(e => e.Rut)
+                .HasMaxLength(15)
+                .HasColumnName("rut");
+            entity.Property(e => e.Salida)
+                .HasMaxLength(10)
+                .HasColumnName("salida");
+        });
+
         modelBuilder.Entity<IclockBiodatum>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("iclock_biodata_pkey");
@@ -6338,8 +6369,6 @@ public partial class BiotimeContext : DbContext
             entity.HasKey(e => e.Rut).HasName("usuario_web_pkey");
 
             entity.ToTable("usuario_web");
-
-            entity.HasIndex(e => e.Email, "usuario_web_email_key").IsUnique();
 
             entity.Property(e => e.Rut)
                 .HasMaxLength(10)

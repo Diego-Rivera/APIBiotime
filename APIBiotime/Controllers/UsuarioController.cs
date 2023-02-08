@@ -1,7 +1,12 @@
-﻿using APIBiotime.Models;
+﻿using APIBiotime.Clases;
+using APIBiotime.Models;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.IO;
 
 namespace APIBiotime.Controllers
 {
@@ -108,5 +113,58 @@ namespace APIBiotime.Controllers
             }
             
         }
+
+
+        [HttpPost("content/upload-file")]
+        public IActionResult Upload(IFormFile file)
+        {
+            List<Usuario> lista= new List<Usuario>();
+
+            using (TextReader reader = new StreamReader(file.OpenReadStream()))
+            {
+                var config = new CsvConfiguration(CultureInfo.CurrentCulture) { Delimiter = ";" };
+                CsvReader csv = new CsvReader(reader, config);
+                
+                while (csv.Read())
+                {
+                    Usuario usu=csv.GetRecord<Usuario>();
+                    lista.Add(usu); 
+                }
+
+                if (lista.Count > 0)
+                {
+                    using (BiotimeContext contexto = new BiotimeContext())
+                    {
+                        foreach (Usuario usu in lista)
+                        {
+                            UsuarioWeb nuevito = new UsuarioWeb();
+                            nuevito.Rut = usu.ID;
+                            nuevito.Nombre = usu.NOMBRE + " " + usu.APELLIDO;
+                            nuevito.Email = usu.EMAIL;
+                            if (usu.ID.Length >= 3)
+                            {
+                                nuevito.Pass = usu.ID.Substring(0, 3);
+                            }
+                            else
+                                nuevito.Pass = usu.ID;
+
+                            nuevito.Pass  += usu.APELLIDO.Substring(Math.Max(0, usu.APELLIDO.Length - 5)) + usu.NOMBRE.Substring(2, 2);
+                            
+                            contexto.UsuarioWebs.Add(nuevito);
+                            
+                        }
+                        contexto.SaveChanges();
+                    }
+                    return Ok();
+                }
+                else
+                    return BadRequest();
+            }
+
+            
+
+            
+        }
+
     }
 }
