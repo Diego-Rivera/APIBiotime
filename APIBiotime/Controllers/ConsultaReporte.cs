@@ -57,7 +57,7 @@ namespace APIBiotime.Controllers
                 //Sólo rut
                 if (rut != null && fechaInicio == null && fechaTermino == null)
                 {
-                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias from iclock_transaction it join personnel_employee pe on it.emp_code = pe.emp_code where  it.emp_code = '"+rut+ "' and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
+                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias, it.punch_time marca, (extract(timezone from it.punch_time)/3600) as zona from iclock_transaction it join personnel_employee pe on it.emp_id = pe.id where  it.emp_code = '" + rut+ "' and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
 
 
                 }
@@ -65,21 +65,21 @@ namespace APIBiotime.Controllers
                 //Rut y fecha Inicio
                 if(rut!=null && fechaInicio!=null && fechaTermino==null)
                 {
-                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias from iclock_transaction it join personnel_employee pe on it.emp_code = pe.emp_code where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and it.emp_code = '" + rut+ "' and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
+                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias, it.punch_time marca, (extract(timezone from it.punch_time)/3600) as zona from iclock_transaction it join personnel_employee pe on it.emp_id = pe.id where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and it.emp_code = '" + rut+ "' and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
 
                 }
 
                 //Rut fechaInicio y FechaTermino
                 if (rut != null && fechaInicio != null && fechaTermino != null)
                 {
-                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias from iclock_transaction it join personnel_employee pe on it.emp_code = pe.emp_code where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and DATE(timezone('CLST', it.punch_time)) <= to_date('" + añoT + "-" + mesT + "-" + diaT + "', 'YYYY-MM-DD') and it.emp_code = '" + rut+ "' and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
+                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias,it.punch_time marca, (extract(timezone from it.punch_time)/3600) as zona from iclock_transaction it join personnel_employee pe on it.emp_id = pe.id where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and DATE(timezone('CLST', it.punch_time)) <= to_date('" + añoT + "-" + mesT + "-" + diaT + "', 'YYYY-MM-DD') and it.emp_code = '" + rut+ "' and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
 
                 }
 
                 //Sin rut, sólo fecha inicio
                 if (rut == null && fechaInicio != null && fechaTermino == null)
                 {
-                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias from iclock_transaction it join personnel_employee pe on it.emp_code = pe.emp_code where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
+                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias, it.punch_time marca, (extract(timezone from it.punch_time)/3600) as zona from iclock_transaction it join personnel_employee pe on it.emp_id = pe.id where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
 
                 }
 
@@ -87,7 +87,7 @@ namespace APIBiotime.Controllers
                 //Sin rut, sólo fecha inicio y término
                 if (rut == null && fechaInicio != null && fechaTermino != null)
                 {
-                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias from iclock_transaction it join personnel_employee pe on it.emp_code = pe.emp_code where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and DATE(timezone('CLST', it.punch_time)) <= to_date('" + añoT + "-" + mesT + "-" + diaT + "', 'YYYY-MM-DD') and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
+                    sql = "select lpad(it.emp_code, 8, '0') as rut,pe.First_Name || ' ' || pe.Last_Name as nombre,it.punch_state as tipoMarca,to_char(timezone('CLST', it.punch_time), 'yyyy-MM-DD') || 'T' || to_char(timezone('CLST', it.punch_time), 'HH24:MI:SS') || 'Z' as fechaHora, it.terminal_sn serial, it.terminal_alias, it.punch_time marca, (extract(timezone from it.punch_time)/3600) as zona from iclock_transaction it join personnel_employee pe on it.emp_code = pe.emp_code where DATE(timezone('CLST', it.punch_time)) >= to_date('" + añoI + "-" + mesI + "-" + diaI + "', 'YYYY-MM-DD') and DATE(timezone('CLST', it.punch_time)) <= to_date('" + añoT + "-" + mesT + "-" + diaT + "', 'YYYY-MM-DD') and (it.punch_state ='1' or it.punch_state ='0') order by it.emp_code, it.punch_time desc";
 
                 }
 
@@ -105,13 +105,38 @@ namespace APIBiotime.Controllers
 
                         List<Resultado> lista = new List<Resultado>();
 
+
                         foreach (DataRow fila in resultado.Rows)
                         {
+                            string zona = fila[3].ToString();
+                            string hora = fila[6].ToString();
+
+                            DateTime fechita = DateTime.Parse(hora, System.Globalization.CultureInfo.CurrentCulture);
+                            zona = zona.Replace("Z", "");
+
+                            DateTimeOffset dto = DateTimeOffset.ParseExact(zona,
+                                "yyyy-MM-dd'T'HH:mm:ss",
+                                CultureInfo.InvariantCulture);
+                            //Console.WriteLine(dto);
+                            zona = dto.Offset.Hours.ToString();
+
+                            if (int.Parse(zona) == -4)
+                            {
+                                fechita = fechita.AddHours(-1);
+                            }
+
+                            string h = fechita.Hour.ToString();
+                            if (h.Length == 1)
+                                h = "0" + h;
+                            string m = fechita.Minute.ToString();
+                            if (m.Length == 1)
+                                m = "0" + m;
+
                             Resultado r=new Resultado();
                             r.rut = fila[0].ToString();
                             r.nombre= fila[1].ToString();
-                            r.tipomarca = fila[2].ToString();
-                            r.fechahora = fila[3].ToString();
+                            r.tipoMarca = fila[2].ToString();
+                            r.fechahora = fechita.ToString();
                             r.serial = fila[4].ToString();
                             r.nombreReloj = fila[5].ToString();
 

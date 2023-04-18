@@ -11,6 +11,7 @@ namespace APIBiotime.Datos
         public NpgsqlConnection conn;
         public DatosPostgreSQL()
         {
+            NpgsqlConnection.GlobalTypeMapper.UseNodaTime();
             using IHost host = Host.CreateDefaultBuilder().Build();
 
             IConfiguration config = host.Services.GetRequiredService<IConfiguration>();
